@@ -1,0 +1,20 @@
+const React = {
+  state: null,
+  stateInitialized: false,
+  setState(newState) {
+    this.state = newState;
+    ReactDOM.render(<Counter/>, rootElement);
+  },
+  useState(initialValue) {
+    if (!this.stateInitialized) {
+      this.stateInitialized = true;
+      this.state = initialValue;
+    }
+    return [this.state, this.setState];
+  }
+};
+
+const Counter = () => {
+  const [count, setCount] = React.useState(0)
+  // ...
+}

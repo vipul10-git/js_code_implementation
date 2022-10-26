@@ -1,20 +1,30 @@
 const React = {
-  state: null,
-  stateInitialized: false,
-  setState(newState) {
-    this.state = newState;
-    ReactDOM.render(<Counter/>, rootElement);
-  },
+  stateArr: [],
+  currentStateIndex: 0,
+  component: null,
   useState(initialValue) {
-    if (!this.stateInitialized) {
-      this.stateInitialized = true;
-      this.state = initialValue;
+    // if we reached beyond the last element of the array
+    // We will need create a new state
+    if (this.currentStateIndex === this.stateArr.length) {
+      const statePair = {
+        value: initialValue,
+        setState(newValue) {
+          statePair.value = newValue;
+          MyReact.currentStateIndex = 0;
+          ReactDOM.render(<MyReact.component />, rootElement);
+        }
+      };
+
+      this.stateArr.push(statePair);
     }
-    return [this.state, this.setState];
+    // get the current state and setState before incrementing the index
+    const currentStatePair = this.stateArr[this.currentStateIndex];
+    this.currentStateIndex += 1;
+    return [currentStatePair.value, currentStatePair.setState];
+  },
+  render(component, rootElement) {
+    this.component = component;
+    this.rootElement = rootElement;
+    ReactDOM.render(<this.component />, this.rootElement);
   }
 };
-
-const Counter = () => {
-  const [count, setCount] = React.useState(0)
-  // ...
-}
